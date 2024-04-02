@@ -36,6 +36,36 @@
   </style>
 </head>
 <body>
+  <script>
+  function transformContent() {
+    var content = document.getElementById('originalContent').value;
+    try {
+      var obj = JSON.parse(content);
+      var transformedContent = JSON.stringify(obj, function(key, value) {
+        if (typeof value === 'string') {
+          if (value.length === 1 && value.charCodeAt(0) > 127) {
+            return '&#' + value.charCodeAt(0) + ';';
+          }
+        }
+        return value;
+      }, 4);
+      document.getElementById('transformedContent').value = transformedContent;
+    } catch (error) {
+      console.error(error);
+      alert('Niepoprawny format danych JSON!');
+    }
+  }
+</script>
+</head>
+<body>
+<h2>Transformacja Treści</h2>
+<p>Wprowadź treść do przekształcenia:</p>
+<textarea id="originalContent" rows="10" cols="50">{ "pieces": { "d4": "♔", "e4": "♙", "f6": "♟", "b8": "♚", "f8": "♜" } }</textarea>
+<br>
+<button onclick="transformContent()">Transformuj</button>
+<br><br>
+<p>Wynik transformacji:</p>
+<textarea id="transformedContent" rows="10" cols="50" readonly></textarea>
   <div id="board" class="board">
     <!-- Chessboard squares -->
     <!-- A -->
