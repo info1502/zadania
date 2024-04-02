@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Szachy z zadaniami</title>
+  <style>
+    .board {
+      width: 400px;
+      height: 400px;
+      display: flex;
+      flex-wrap: wrap;
+    }
+     .square.highlight {
+    background-color: #c1a78c;
+  }
+    .square {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 36px;
+      user-select: none;
+    }
+    
+    .square.white {
+      background-color: #f0d9b5;
+    }
+    
+    .square.black {
+      background-color: #b58863;
+    }
+    
+    .draggable {
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="board" class="board">
+    <!-- Chessboard squares -->
+    <!-- A -->
+    <div class="square white" id="a1"></div>
+    <div class="square black" id="b1"></div>
+    <div class="square white" id="c1"></div>
+    <div class="square black" id="d1"></div>
+    <div class="square white" id="e1"></div>
+    <div class="square black" id="f1"></div>
+    <div class="square white" id="g1"></div>
+    <div class="square black" id="h1"></div>
+    
+    <!-- B -->
+    <div class="square black" id="a2"></div>
+    <div class="square white" id="b2"></div>
+    <div class="square black" id="c2"></div>
+    <div class="square white" id="d2"></div>
+    <div class="square black" id="e2"></div>
+    <div class="square white" id="f2"></div>
+    <div class="square black" id="g2"></div>
+    <div class="square white" id="h2"></div>
+    
+      <!-- C -->
+    <div class="square white" id="a3"></div>
+    <div class="square black" id="b3"></div>
+    <div class="square white" id="c3"></div>
+    <div class="square black" id="d3"></div>
+    <div class="square white" id="e3"></div>
+    <div class="square black" id="f3"></div>
+    <div class="square white" id="g3"></div>
+    <div class="square black" id="h3"></div>
+    
+    <!-- D -->
+    <div class="square black" id="a4"></div>
+    <div class="square white" id="b4"></div>
+    <div class="square black" id="c4"></div>
+    <div class="square white" id="d4"></div>
+    <div class="square black" id="e4"></div>
+    <div class="square white" id="f4"></div>
+    <div class="square black" id="g4"></div>
+    <div class="square white" id="h4"></div>
+    
+    <!-- E -->
+    <div class="square white" id="a5"></div>
+    <div class="square black" id="b5"></div>
+    <div class="square white" id="c5"></div>
+    <div class="square black" id="d5"></div>
+    <div class="square white" id="e5"></div>
+    <div class="square black" id="f5"></div>
+    <div class="square white" id="g5"></div>
+    <div class="square black" id="h5"></div>
+    
+    <!-- F -->
+    <div class="square black" id="a6"></div>
+    <div class="square white" id="b6"></div>
+    <div class="square black" id="c6"></div>
+    <div class="square white" id="d6"></div>
+    <div class="square black" id="e6"></div>
+    <div class="square white" id="f6"></div>
+    <div class="square black" id="g6"></div>
+    <div class="square white" id="h6"></div>
+    
+    <!-- G -->
+    <div class="square white" id="a7"></div>
+    <div class="square black" id="b7"></div>
+    <div class="square white" id="c7"></div>
+    <div class="square black" id="d7"></div>
+    <div class="square white" id="e7"></div>
+    <div class="square black" id="f7"></div>
+    <div class="square white" id="g7"></div>
+    <div class="square black" id="h7"></div>
+    
+    <!-- H -->
+    <div class="square black" id="a8"></div>
+    <div class="square white" id="b8"></div>
+    <div class="square black" id="c8"></div>
+    <div class="square white" id="d8"></div>
+    <div class="square black" id="e8"></div>
+    <div class="square white" id="f8"></div>
+    <div class="square black" id="g8"></div>
+    <div class="square white" id="h8"></div>
+  </div>
+  <div id="positionContainer"></div>
+  <!-- Chess pieces -->
+  <div class="draggable" draggable="true" id="whiteKing">♔</div>
+  <div class="draggable" draggable="true" id="whiteQueen">♕</div>
+  <div class="draggable" draggable="true" id="whiteRook">♖</div>
+  <div class="draggable" draggable="true" id="whiteBishop">♗</div>
+  <div class="draggable" draggable="true" id="whiteKnight">♘</div>
+  <div class="draggable" draggable="true" id="whitePawn">♙</div>
+
+  <div class="draggable" draggable="true" id="blackKing">♚</div>
+  <div class="draggable" draggable="true" id="blackQueen">♛</div>
+  <div class="draggable" draggable="true" id="blackRook">♜</div>
+  <div class="draggable" draggable="true" id="blackBishop">♝</div>
+  <div class="draggable" draggable="true" id="blackKnight">♞</div>
+  <div class="draggable" draggable="true" id="blackPawn">♟</div>
+  
+  <script>
+      // JavaScript for drag-and-drop functionality
+    const pieces = document.querySelectorAll('.draggable');
+    const squares = document.querySelectorAll('.square');
+    const positionContainer = document.getElementById('positionContainer');
+
+    pieces.forEach(piece => {
+      piece.addEventListener('dragstart', dragStart);
+      piece.addEventListener('dragend', dragEnd);
+    });
+
+    squares.forEach(square => {
+      square.addEventListener('dragover', dragOver);
+      square.addEventListener('dragenter', dragEnter);
+      square.addEventListener('dragleave', dragLeave);
+      square.addEventListener('drop', dragDrop);
+    });
+
+    let draggedPiece = null;
+    let currentPosition = {};
+
+    function dragStart() {
+      draggedPiece = this;
+      this.style.opacity = '0.5';
+    }
+
+    function dragEnd() {
+      this.style.opacity = '1';
+      updatePosition();
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+    }
+
+    function dragEnter(e) {
+      e.preventDefault();
+      this.classList.add('highlight');
+    }
+
+    function dragLeave() {
+      this.classList.remove('highlight');
+    }
+
+    function dragDrop() {
+      this.classList.remove('highlight');
+      const pieceClone = draggedPiece.cloneNode(true);
+      this.appendChild(pieceClone);
+      updatePosition();
+    }
+
+    function updatePosition() {
+      currentPosition = {};
+      squares.forEach(square => {
+        if (square.children.length > 0) {
+          const pieceId = square.children[0].id;
+          const squareId = square.id;
+          currentPosition[squareId] = document.getElementById(pieceId).innerHTML;
+        }
+      });
+      positionContainer.innerHTML = JSON.stringify({ pieces: currentPosition }, null, 2);
+    }
+  </script>
+</body>
+</html>
